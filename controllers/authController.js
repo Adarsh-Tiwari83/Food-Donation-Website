@@ -11,6 +11,9 @@ const registerController = async (req,res) => {
                 message:'user already exists'
             })
         }
+
+        
+
         //hash pass
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password,salt);
@@ -44,6 +47,15 @@ const loginController = async(req,res) => {
                 message:"user not found"
             })
         }
+
+        //check role
+        if(existingUser.role !== req.body.role){
+            return res.status(500).send({
+                success:false,
+                message:"role doesnt match"
+            })
+        }
+
         //compare password
         const comparePassword = await bcrypt.compare(req.body.password, existingUser.password);
         if(!comparePassword){
